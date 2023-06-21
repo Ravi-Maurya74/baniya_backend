@@ -22,7 +22,7 @@ class Transaction(models.Model):
     date = models.DateField(auto_now_add=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, default=Decimal(0.00))
     student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name="transaction"
+        Student, on_delete=models.CASCADE, related_name="transactions"
     )
     category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, related_name="transactions"

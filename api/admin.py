@@ -12,9 +12,14 @@ class StudentView(admin.ModelAdmin):
 
     def budgets(self, instance):
         return [f"{m}" for m in instance.budgets.all()]
+    
+class CategoryView(admin.ModelAdmin):
+    readonly_fields = (
+        "id",
+    )
 
 
 admin.site.register(Student, StudentView)
-admin.site.register(Category)
+admin.site.register(Category,CategoryView)
 admin.site.register(CategoryBudget)
 admin.site.register(Transaction)
