@@ -37,3 +37,7 @@ def addCategoryBudget(request):
     studentData = Student.objects.get(pk=received_json_data['student'])
     data = StudentSerializer(studentData).data
     return Response(data)
+
+class CreateStudent(generics.CreateAPIView):
+    queryset=Student.objects.all()
+    serializer_class = StudentSerializer

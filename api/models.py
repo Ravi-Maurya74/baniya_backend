@@ -7,10 +7,10 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     city = models.CharField(max_length=100)
     total_budget = models.DecimalField(
-        max_digits=20, decimal_places=2, default=Decimal(0.00)
+        max_digits=20, decimal_places=2,default=Decimal(0.00)
     )
     credit_score = models.DecimalField(
-        max_digits=20, decimal_places=2, default=Decimal(0.00)
+        max_digits=20, decimal_places=2, default=Decimal(10.00)
     )
 
     def __str__(self) -> str:
@@ -20,13 +20,16 @@ class Student(models.Model):
 class Transaction(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
-    amount = models.DecimalField(max_digits=20, decimal_places=2, default=Decimal(0.00))
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="transactions"
     )
     category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, related_name="transactions"
     )
+
+    def __str__(self) -> str:
+        return self.title + " " + str(self.student)
 
 
 class Category(models.Model):
@@ -40,7 +43,7 @@ class CategoryBudget(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="budget"
     )
-    budget = models.DecimalField(max_digits=20, decimal_places=2, default=Decimal(0.00))
+    budget = models.DecimalField(max_digits=20, decimal_places=2)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="budgets"
     )
