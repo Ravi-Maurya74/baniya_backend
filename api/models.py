@@ -20,7 +20,7 @@ class Student(models.Model):
 
 class Transaction(models.Model):
     title = models.CharField(max_length=100,blank=False)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="transactions"

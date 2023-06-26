@@ -6,6 +6,8 @@ from django.db.models import Q
 from .models import Student,Transaction,Category,CategoryBudget,Comment,CommunityPost
 from .serializers import StudentSerializer, TransactionSerializer, CreateTransactionSerializer,CreateStudentSerializer,CreateCommunityPostSerializer,CommunityPostSerializer,CommentSerializer,CreateCommentSerializer
 import datetime
+import calendar
+from datetime import date, timedelta
 
 @api_view(['POST'])
 def addCategoryBudget(request):
@@ -109,13 +111,28 @@ class CommentListView(generics.ListAPIView):
     
 @api_view(['GET'])
 def monthlyExpenses(request,student_id):
+
+    today = date.today()
+    current_year = today.year
+    current_month = today.month
+
+    num_days = calendar.monthrange(current_year, current_month)[1]
+    first_day = date(current_year, current_month, 1)
+    last_day = date(current_year, current_month, num_days)
+    response = {}
+
+
+    current_date = first_day
+    while current_date <= last_day:
+        if not str(current_date) in response:
+            response[str(current_date)] = 0.00
+        current_date += timedelta(days=1)
+
+
     student = Student.objects.get(pk=student_id)
     current_month = datetime.datetime.now().month
     current_year = datetime.datetime.now().year
-    response = {}
     for transaction in student.transactions.filter(Q(date__month=current_month) & Q(date__year=current_year)):
-        if not str(transaction.date) in response:
-            response[str(transaction.date)] = 0.00
         response[str(transaction.date)]+=float(transaction.amount)
         
     return Response(response,status=200)
