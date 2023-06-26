@@ -179,4 +179,38 @@ class CreateCommunityPostSerializer(serializers.ModelSerializer):
             'student',
             'image_url',
         ]
+
+class CommentSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
+
+
+    def get_student(self,instance):
+        return instance.student.name
+    
+    def get_liked(self,instance):
+        student_id = self.context['student_id']
+        student_instance = Student.objects.get(pk=student_id)
+        return student_instance in instance.liked_by.all()
+
+    class Meta:
+        model = Comment
+        fields = [
+            'student',
+            'comment',
+            'upvotes',
+            'date',
+            'post',
+            'liked',
+        ]
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = [
+            'student',
+            'comment',
+            'post',
+        ]
         
