@@ -69,7 +69,13 @@ class LikeCommunityPostView(generics.UpdateAPIView):
         communityPost = self.get_object()
         student_id = request.data['student_id']
         student = Student.objects.get(pk=student_id)
-        communityPost.liked_by.add(student)
+        if communityPost.liked_by.filter(id=student.id).exists():
+            communityPost.liked_by.remove(student)
+            communityPost.upvotes-=1
+        else:
+            communityPost.liked_by.add(student)
+            communityPost.upvotes+=1
+        communityPost.save()
         return super().update(request, *args, **kwargs)
     
     def get_serializer_context(self):
@@ -86,7 +92,11 @@ class BookmarkCommunityPostView(generics.UpdateAPIView):
         communityPost = self.get_object()
         student_id = request.data['student_id']
         student = Student.objects.get(pk=student_id)
-        communityPost.bookmarked_by.add(student)
+        if communityPost.bookmarked_by.filter(id=student.id).exists():
+            communityPost.bookmarked_by.remove(student)
+        else:
+            communityPost.bookmarked_by.add(student)
+        communityPost.save()
         return super().update(request, *args, **kwargs)
     
     def get_serializer_context(self):
@@ -100,12 +110,35 @@ class CommentCreateView(generics.CreateAPIView):
     serializer_class = CreateCommentSerializer
 
 class CommentListView(generics.ListAPIView):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        return Comment.objects.filter(post=self.kwargs['post'])
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         student_id = self.kwargs['student_id']
+        context['student_id'] = student_id
+        return context
+    
+class LikeCommentView(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def update(self, request, *args, **kwargs):
+        comment = self.get_object()
+        student_id = request.data['student_id']
+        student = Student.objects.get(pk=student_id)
+        if comment.liked_by.filter(id=student.id).exists():
+            comment.liked_by.remove(student)
+        else:
+            comment.liked_by.add(student)
+        comment.save()
+        return super().update(request, *args, **kwargs)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        student_id = self.request.data['student_id']
         context['student_id'] = student_id
         return context
     

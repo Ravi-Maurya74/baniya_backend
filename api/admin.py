@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Student, Category, CategoryBudget, Transaction, CommunityPost
+from .models import Student, Category, CategoryBudget, Transaction, CommunityPost, Comment
 
 # Register your models here.
 
@@ -24,3 +24,4 @@ admin.site.register(Category,CategoryView)
 admin.site.register(CategoryBudget)
 admin.site.register(Transaction)
 admin.site.register(CommunityPost)
+admin.site.register(Comment)

@@ -14,6 +14,7 @@ urlpatterns = [
     path('communityPost/update/like/<pk>',views.LikeCommunityPostView.as_view()),
     path('communityPost/update/bookmark/<pk>',views.BookmarkCommunityPostView.as_view()),
     path('comment/create/',views.CommentCreateView.as_view()),
-    path('comment/list/<int:student_id>',views.CommentListView.as_view()),
+    path('comment/list/<int:post>/<int:student_id>',views.CommentListView.as_view()),
+    path('comment/update/like/<pk>',views.LikeCommentView.as_view()),
     path('addCategoryBudget/',views.addCategoryBudget),
 ]
